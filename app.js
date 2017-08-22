@@ -87,6 +87,15 @@ function drawScore() {
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 
+document.addEventListener('mousemove', mouseMoveHandler);
+
+function mouseMoveHandler(event) {
+  var relativeX = event.clientX - canvas.offsetLeft;
+  if (relativeX > 0 + barWidth / 2 && relativeX < canvas.width - barWidth / 2) {
+    barX = relativeX - barWidth / 2;
+  }
+}
+
 function keyDownHandler(event) {
   if (event.keyCode == 39){
     rightPressed = true;
