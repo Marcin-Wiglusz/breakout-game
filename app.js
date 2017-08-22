@@ -26,6 +26,8 @@ var brickMargin = 5;
 var brickTopPadding = 30;
 var brickLeftPadding = 20;
 
+var score = 0;
+
 var bricks = [];
 for (var i = 0; i < brickColumns; i++){
   bricks[i] = [];
@@ -62,10 +64,21 @@ function ballCollision() {
         if (x > bang.x && x < bang.x + brickWidth && y > bang.y && y < bang.y + brickHeight) {
           dy = -dy;
           bang.status = 0;
+          score++;
+          if (score == brickColumns * brickRows) {
+            alert('YOU WIN');
+            document.location.reload();
+          }
         }
       }  
     }
   }
+}
+
+function drawScore() {
+  ctx.font = '20px Arial';
+  ctx.fillStyle = '#FF0000';
+  ctx.fillText('Score: ' + score, 5, 20);
 }
 
 
@@ -116,8 +129,7 @@ function draw() {
   drawBar();
   drawBricks();
   ballCollision();
-  
-  
+  drawScore();  
   
   //making ball bounce off the canvas edge
   if (y + dy < ballRadius) { //ballRadius val allows to bounce from the edge, with the the ball's edge
@@ -152,5 +164,5 @@ function draw() {
   y += dy;    
 }
 
-setInterval(draw, 20);
+setInterval(draw, 10);
 //test
