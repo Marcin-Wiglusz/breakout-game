@@ -10,13 +10,63 @@ var y = canvas.height - 100;
 var dx = 2; // increase value and you'll increase ball speed 
 var dy = -2;
 
-var ballRadius = 10;
+var ballRadius = 5;
 var barHeight = 10;
 var barWidth = 75;
 var barX = (canvas.width - barWidth) / 2;
 
 var rightPressed = false;
 var leftPressed = false;
+
+var brickWidth = 50;
+var brickHeight = 20;
+var brickColumns = 8;
+var brickRows = 5;
+var brickMargin = 5;
+var brickTopPadding = 30;
+var brickLeftPadding = 20;
+
+var bricks = [];
+for (var i = 0; i < brickColumns; i++){
+  bricks[i] = [];
+  for (var j = 0; j < brickRows; j++){
+    //creating a brick object
+    bricks[i][j] = {x: 0, y: 0, status: 1}
+  }
+}
+
+
+function drawBricks() {
+  for (var i = 0; i < brickColumns; i ++) {
+    for (var j = 0; j < brickRows; j++) {
+      if (bricks[i][j].status == 1){
+        var brickX = (i * (brickWidth + brickMargin)) + brickLeftPadding;
+        var brickY = (j * (brickHeight + brickMargin)) + brickTopPadding;
+        bricks[i][j].x = brickX;
+        bricks[i][j].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = '#FF0000';
+        ctx.fill();
+        ctx.closePath();
+      }  
+    }
+  }
+}
+
+function ballCollision() {
+  for (var i = 0; i < brickColumns; i++) {
+    for (var j = 0; j < brickRows; j++) {
+      var bang = bricks[i][j];
+      if (bang.status == 1) {
+        if (x > bang.x && x < bang.x + brickWidth && y > bang.y && y < bang.y + brickHeight) {
+          dy = -dy;
+          bang.status = 0;
+        }
+      }  
+    }
+  }
+}
 
 
 //moving bar with right/left arrows
@@ -52,7 +102,7 @@ function drawBall() {
 
 function drawBar() {
   ctx.beginPath();
-  ctx.rect(barX, canvas.height - 2 * barHeight, barWidth, barHeight);
+  ctx.rect(barX, canvas.height - barHeight, barWidth, barHeight);
   ctx.fillStyle = '#FF0000';
   ctx.fill();
   ctx.closePath();
@@ -64,10 +114,25 @@ function draw() {
   
   drawBall();
   drawBar();
+  drawBricks();
+  ballCollision();
+  
+  
   
   //making ball bounce off the canvas edge
-  if (y + dy < ballRadius || y + dy > canvas.height - ballRadius) { //ballRadius val allows to bounce from the edge, withe the ball's edge
+  if (y + dy < ballRadius) { //ballRadius val allows to bounce from the edge, with the the ball's edge
     dy = -dy;
+  }
+  //allowing the ball to pass bottom edge
+  else if (y + dy > canvas.height - ballRadius) {
+    //making the ball bounce off the bar
+    if (x > barX && x < barX + barWidth) {
+      dy = -dy;
+    }
+    else{
+      alert('DAMN');
+      document.location.reload(); 
+    }    
   }
   if (x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
     dx = -dx;
@@ -87,5 +152,5 @@ function draw() {
   y += dy;    
 }
 
-setInterval(draw, 10);
+setInterval(draw, 20);
 //test
