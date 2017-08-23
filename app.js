@@ -27,6 +27,7 @@ var brickTopPadding = 30;
 var brickLeftPadding = 20;
 
 var score = 0;
+var lives = 3;
 
 var bricks = [];
 for (var i = 0; i < brickColumns; i++){
@@ -79,6 +80,12 @@ function drawScore() {
   ctx.font = '20px Arial';
   ctx.fillStyle = '#FF0000';
   ctx.fillText('Score: ' + score, 5, 20);
+}
+
+function drawLives() {
+  ctx.font = '20px Arial';
+  ctx.fillStyle = '#FF0000';
+  ctx.fillText('Lives: ' + lives, canvas.width - 75, 20);
 }
 
 
@@ -138,7 +145,8 @@ function draw() {
   drawBar();
   drawBricks();
   ballCollision();
-  drawScore();  
+  drawScore(); 
+  drawLives();
   
   //making ball bounce off the canvas edge
   if (y + dy < ballRadius) { //ballRadius val allows to bounce from the edge, with the the ball's edge
@@ -151,8 +159,18 @@ function draw() {
       dy = -dy;
     }
     else{
-      alert('DAMN');
-      document.location.reload(); 
+      lives--;
+      if (!lives) {
+        alert('Game Over!');
+        document.location.reload();
+      }
+      else {
+        x = canvas.width / 2;
+        y = canvas.height - 100;
+        dx = 2;
+        dy = -2;
+        barX = (canvas.width - barWidth) / 2;
+      }
     }    
   }
   if (x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
